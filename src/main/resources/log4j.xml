@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d - %c -%-4r [%t] %-5p %x - %m%n"/>
+        </layout>
+
+        <!--限制输出级别-->
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMax" value="ERROR"/>
+            <param name="LevelMin" value="TRACE"/>
+        </filter>
+    </appender>
+
+    <appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+        <param name="File" value="logs/eap4.log"/>
+        <param name="MaxFileSize" value="5000KB"/>
+        <param name="Encoding" value="UTF-8"/>
+        <param name="MaxBackupIndex" value="10"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%d - %c -%-4r [%t] %L %-5p %x - %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- 定义htmlunit的日志类型，避免不断的输出日志  -->
+    <logger name="com.gargoylesoftware" additivity="false">
+        <level value="ERROR"/>
+<!--        <appender-ref ref="FILE"/>-->
+    </logger>
+    <logger name="com.alibaba.dubbo" additivity="false">
+        <level value="ERROR"/>
+<!--        <appender-ref ref="FILE"/>-->
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <!--通过<logger></logger>的定义可以将各个包中的类日志输出到不同的日志文件中-->
+    <logger name="com" additivity="false">
+        <level value="ALL"/>
+<!--        <appender-ref ref="FILE"/>-->
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!--通过<category></category>的定义可以将各个包中的类日志输出到不同的日志文件中-->
+    <category name="java.sql">
+        <level value="DEBUG"/>
+<!--        <appender-ref ref="FILE"/>-->
+        <appender-ref ref="CONSOLE"/>
+    </category>
+
+    <!--  root>
+          <priority value ="error"/>
+          <appender-ref ref="FILE"/>
+      </root -->
+
+</log4j:configuration> 
