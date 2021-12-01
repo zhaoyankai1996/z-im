@@ -1,6 +1,12 @@
 package com.originsys.im.config;
 
+import org.apache.log4j.Logger;
 import org.tio.utils.time.Time;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
 
 /**
  * @author mohuangNPC
@@ -8,6 +14,9 @@ import org.tio.utils.time.Time;
  * @date 2021/11/25 16:02
  */
 public class ServerConfig {
+    private static Logger log = Logger.getLogger(ServerConfig.class);
+    private static Properties properties;
+    private static ServerConfig serverConfig = new ServerConfig();
     /**
      * 协议名字(可以随便取，主要用于开发人员辨识)
      */
@@ -33,6 +42,37 @@ public class ServerConfig {
     public static interface IpStatDuration {
         public static final Long DURATION_1 = Time.MINUTE_1 * 5;
         public static final Long[] IPSTAT_DURATIONS = new Long[] { DURATION_1 };
+    }
+
+    public static ServerConfig getInstance(){
+        return serverConfig;
+    }
+
+    public void useProp(String fileName){
+        InputStream inputStream = null;
+        try {
+            inputStream = this.getClass().getClassLoader().getResourceAsStream(fileName);
+            if (inputStream == null) {
+                throw new IllegalArgumentException("Properties file not found in classpath: " + fileName);
+            }
+            properties = new Properties();
+            properties.load(new InputStreamReader(inputStream, "UTF-8"));
+            setProtocolName(properties.getProperty("PROTOCOL_NAME"));
+            setCHARSET(properties.getProperty("CHARSET"));
+            setHeartbeatTimeout(Integer.valueOf(properties.getProperty("HEARTBEAT_TIMEOUT")));
+            setServerPort(Integer.valueOf(properties.getProperty("SERVER_PORT")));
+        } catch (IOException var12) {
+            throw new RuntimeException("Error loading properties file.", var12);
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException var11) {
+                    log.error(var11.getMessage(), var11);
+                }
+            }
+
+        }
     }
 
     public static String getProtocolName() {

@@ -7,22 +7,15 @@
 <body>
 
 </body>
+<script src="imsdk/EIMSdk.js"></script>
 <script>
     init()
     function init(){
-        var ws = new WebSocket('ws://127.0.0.1:9326?name=test')
-        ws.onopen = function (event) {
-            console.log(event.data)
+        var data = {
+            'a':'a',
+            'b':'b'
         }
-        ws.onmessage = function (event) {
-            console.log(event.data)
-        }
-        ws.onclose = function (event) {
-            console.log(event.data)
-        }
-        ws.onerror = function (event) {
-            console.log(event.data)
-        }
+        var eima = new eim(data);
     }
 </script>
 </html>

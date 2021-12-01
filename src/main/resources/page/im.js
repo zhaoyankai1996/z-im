@@ -1,5 +1,5 @@
 var ws_protocol = 'ws'; // ws 或 wss
-var ip = '127.0.0.1'
+var ip = 'localhost'
 var port = 9326
 
 var heartbeatTimeout = 5000; // 心跳超时时间，单位：毫秒
@@ -31,7 +31,7 @@ function randomNum(minNum, maxNum) {
 
 function initWs() {
     myname = getRandomName();
-    var queryString = 'name=' + myname;
+    var queryString = 'userId=' + myname;
 
     var param = "";
     tiows = new tio.ws(ws_protocol, ip, port, queryString, param, handler, heartbeatTimeout, reconnInterval, binaryType)
@@ -59,7 +59,20 @@ function showTime() {
 
 function sendMsg() {
     var msg = document.getElementById('messageText');
-    tiows.send(msg.value);
+    var msgVo = {
+        from: myname,
+        to: document.getElementById("sendName").value,
+        msg: msg.value
+    }
+    tiows.send(JSON.stringify(msgVo));
+    var content = document.getElementsByTagName('ul')[0];
+    var ico, imgcls, spancls, ncikcls;
+    ico = "image/t2.jpg";
+    imgcls = "imgright";
+    spancls = "spanright";
+    nickcls = "nickright";
+    content.innerHTML += '<li><img src="' + ico + '" class="' + imgcls + '"><span class="' + nickcls + '">' + msgVo.from + '</span><span class="' + spancls + '">' + msgVo.msg + '</span></li>';
+    content.scrollTop = content.scrollHeight;
     msg.value = "";
 }
 

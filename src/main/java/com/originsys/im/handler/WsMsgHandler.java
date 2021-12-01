@@ -9,6 +9,7 @@ import com.originsys.im.domain.PreCheckVO;
 import com.originsys.im.util.BaseAction;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
+import org.tio.http.common.Cookie;
 import org.tio.http.common.HttpRequest;
 import org.tio.http.common.HttpResponse;
 import org.tio.utils.lock.SetWithLock;
@@ -17,7 +18,10 @@ import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -38,6 +42,11 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
      */
     @Override
     public HttpResponse handshake(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
+//        List<Cookie> cookies = httpRequest.getCookies();
+//        log().info(cookies.size());
+//        for (Cookie cookie : cookies) {
+//            log().info(cookie.getName()+":"+cookie.getValue());
+//        }
         String clientip = httpRequest.getClientIp();
         String userId = httpRequest.getParam("userId");
         if(!connectionPreCheck(httpRequest,httpResponse).getState()){
@@ -45,7 +54,7 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
         }else{
             Tio.bindUser(channelContext, userId);
 //        channelContext.setUserid(myname);
-            log().info("收到来自"+clientip+"的ws握手包\r\n"+httpRequest.toString());
+            log().info("收到来自"+ URLDecoder.decode(clientip,"UTF-8") +"的ws握手包\r\n"+URLDecoder.decode(httpRequest.toString(),"UTF-8"));
         }
         return httpResponse;
     }
@@ -60,7 +69,12 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
     @Override
     public void onAfterHandshaked(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         log().info("onAfterHandshaked:");
+//        List<Cookie> cookies = httpRequest.getCookies();
+//        for (Cookie cookie : cookies) {
+//            log().info(cookie.getName()+":"+cookie.getValue());
+//        }
         String userId = httpRequest.getParam("userId");
+        log().info(Tio.getByUserid(channelContext.tioConfig,userId) == null);
         PreCheckVO preCheckVO = connectionPreCheck(httpRequest,httpResponse);
         if(!preCheckVO.getState()){
 //            String msg = "{name:'admin',message:'" + channelContext.userid + " 进来了，共【" + 1 + "】人在线" + "'}";
@@ -71,6 +85,7 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
             messageVO.setIs_group(0);
             messageVO.setIs_receive(0);
             messageVO.setSend_date(new Date());
+            messageVO.setCode(-1);
             String message = JSONObject.toJSONString(messageVO);
             WsResponse wsResponse = WsResponse.fromText(message, ServerConfig.CHARSET);
             Tio.bSend(channelContext,wsResponse);
@@ -121,6 +136,7 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
             return null;
         }
         MessageVO messageVO = JSONObject.parseObject(text, MessageVO.class);
+        messageVO.setCode(1);
         //channelContext.getToken()
         //String msg = channelContext.getClientNode().toString() + " 说：" + text;
 //        String msg = "{name:'" + channelContext.userid + "',message:'" + text + "'}";

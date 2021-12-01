@@ -12,10 +12,14 @@ var IMHandler = function () {
      */
     this.onmessage = function (event, ws) {
         var data = event.data;
-        var msgBody = eval('(' + data + ')');
+        console.log(JSON.parse(data))
+        var msgBody = JSON.parse(data);
+        if(msgBody.code == -1){
+            return -1;
+        }
         var ico, imgcls, spancls, ncikcls;
         var content = document.getElementsByTagName('ul')[0];
-        if (myname == msgBody.name) {
+        if (myname == msgBody.from) {
             ico = "image/t2.jpg";
             imgcls = "imgright";
             spancls = "spanright";
@@ -27,10 +31,10 @@ var IMHandler = function () {
             nickcls = "nickleft"
         }
         //myself=!myself;
-        if (msgBody.name == "admin") {
-            content.innerHTML += '<li><div class="sysinfo">' + msgBody.message + '</div></li>';
+        if (msgBody.from == "admin") {
+            content.innerHTML += '<li><div class="sysinfo">' + msgBody.msg + '</div></li>';
         } else {
-            content.innerHTML += '<li><img src="' + ico + '" class="' + imgcls + '"><span class="' + nickcls + '">' + msgBody.name + '</span><span class="' + spancls + '">' + msgBody.message + '</span></li>';
+            content.innerHTML += '<li><img src="' + ico + '" class="' + imgcls + '"><span class="' + nickcls + '">' + msgBody.from + '</span><span class="' + spancls + '">' + msgBody.msg + '</span></li>';
         }
 
         //document.getElementById('contentId').innerHTML += data + '<br>'

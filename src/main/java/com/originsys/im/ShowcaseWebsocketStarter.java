@@ -1,9 +1,12 @@
 package com.originsys.im;
 
 import com.originsys.im.config.ServerConfig;
+import com.originsys.im.handler.CustomHandler;
 import com.originsys.im.handler.WsMsgHandler;
+import com.originsys.im.listener.CustomServerAioListener;
 import com.originsys.im.listener.ServerAioListener;
 import org.tio.server.ServerTioConfig;
+import org.tio.utils.jfinal.P;
 import org.tio.websocket.server.WsServerStarter;
 
 /**
@@ -55,6 +58,7 @@ public class ShowcaseWebsocketStarter {
     }
     public static void main(String[] args) throws Exception {
         //启动websocket server
-        start(null,null);
+        ServerConfig.getInstance().useProp("im.properties");
+        start(new CustomHandler(),new CustomServerAioListener());
     }
 }

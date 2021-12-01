@@ -21,22 +21,22 @@ public class ServerAioListener extends WsServerAioListener {
     @Override
     public void onAfterConnected(ChannelContext channelContext, boolean isConnected, boolean isReconnect) throws Exception {
         super.onAfterConnected(channelContext, isConnected, isReconnect);
-        if (log.isInfoEnabled()) {
-            log.info("onAfterConnected\r\n"+channelContext);
+        if (log.isDebugEnabled()) {
+            log.debug("onAfterConnected\r\n"+channelContext);
         }
     }
     @Override
     public void onAfterSent(ChannelContext channelContext, Packet packet, boolean isSentSuccess) throws Exception {
         super.onAfterSent(channelContext, packet, isSentSuccess);
-        if (log.isInfoEnabled()) {
-            log.info("onAfterSent\r\n"+packet.logstr()+"\r\n"+channelContext);
+        if (log.isDebugEnabled()) {
+            log.debug("onAfterSent\r\n"+packet.logstr()+"\r\n"+channelContext);
         }
     }
     @Override
     public void onBeforeClose(ChannelContext channelContext, Throwable throwable, String remark, boolean isRemove) throws Exception {
         super.onBeforeClose(channelContext, throwable, remark, isRemove);
-        if (log.isInfoEnabled()) {
-            log.info("onBeforeClose\r\n"+channelContext);
+        if (log.isDebugEnabled()) {
+            log.debug("onBeforeClose\r\n"+channelContext);
         }
         WsSessionContext wsSessionContext = (WsSessionContext) channelContext.getAttribute();
         if (wsSessionContext != null && wsSessionContext.isHandshaked()) {
@@ -51,22 +51,22 @@ public class ServerAioListener extends WsServerAioListener {
     @Override
     public void onAfterDecoded(ChannelContext channelContext, Packet packet, int packetSize) throws Exception {
         super.onAfterDecoded(channelContext, packet, packetSize);
-        if (log.isInfoEnabled()) {
-            log.info("onAfterDecoded\r\n"+packet.logstr()+"\r\n"+channelContext);
+        if (log.isDebugEnabled()) {
+            log.debug("onAfterDecoded\r\n"+packet.logstr()+"\r\n"+channelContext);
         }
     }
     @Override
     public void onAfterReceivedBytes(ChannelContext channelContext, int receivedBytes) throws Exception {
         super.onAfterReceivedBytes(channelContext, receivedBytes);
-        if (log.isInfoEnabled()) {
-            log.info("onAfterReceivedBytes\r\n"+channelContext);
+        if (log.isDebugEnabled()) {
+            log.debug("onAfterReceivedBytes\r\n"+channelContext);
         }
     }
     @Override
     public void onAfterHandled(ChannelContext channelContext, Packet packet, long cost) throws Exception {
         super.onAfterHandled(channelContext, packet, cost);
-        if (log.isInfoEnabled()) {
-            log.info("onAfterHandled\r\n"+packet.logstr()+"\r\n"+channelContext);
+        if (log.isDebugEnabled()) {
+            log.debug("onAfterHandled\r\n"+packet.logstr()+"\r\n"+channelContext);
         }
     }
 

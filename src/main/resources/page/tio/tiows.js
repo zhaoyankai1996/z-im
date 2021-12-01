@@ -15,6 +15,7 @@ tio.ws = {};
  * @param {*} binaryType 'blob' or 'arraybuffer';//arraybuffer是字节
  */
 tio.ws = function (ws_protocol, ip, port, paramStr, param, handler, heartbeatTimeout, reconnInterval, binaryType) {
+    this.needReConn = true
     this.ip = ip
     this.port = port
     this.url = ws_protocol + '://' + ip + ':' + port
@@ -61,18 +62,23 @@ tio.ws = function (ws_protocol, ip, port, paramStr, param, handler, heartbeatTim
             }, self.heartbeatSendInterval)
         }
         ws.onmessage = function (event) {
-            self.handler.onmessage.call(self.handler, event, ws)
+            var code = self.handler.onmessage.call(self.handler, event, ws)
+            if(code == -1){
+                this.needReConn = false;
+            }
             self.lastInteractionTime(new Date().getTime())
         }
         ws.onclose = function (event) {
             clearInterval(self.pingIntervalId) // clear send heartbeat task
-
             try {
                 self.handler.onclose.call(self.handler, event, ws)
             } catch (error) {
             }
-
-            self.reconn(event)
+            if(this.needReConn){
+                self.reconn(event)
+            }else{
+                this.needReConn = true;
+            }
         }
         ws.onerror = function (event) {
             self.handler.onerror.call(self.handler, event, ws)
