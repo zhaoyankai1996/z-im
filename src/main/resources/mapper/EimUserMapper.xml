@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.originsys.im.dao.EimUserMapper">
+  <resultMap id="BaseResultMap" type="com.originsys.im.domain.EimUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="VARCHAR" property="user_id" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nick_name" />
+    <result column="expand" jdbcType="VARCHAR" property="expand" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_id, pwd, nick_name, expand
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from eim_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByUserData" parameterType="com.originsys.im.domain.EimUser" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from eim_user
+    where user_id = #{user_id,jdbcType=BIGINT} and pwd = #{pwd}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from eim_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.originsys.im.domain.EimUser">
+    insert into eim_user (id, user_id, pwd, 
+      nick_name, expand)
+    values (#{id,jdbcType=BIGINT}, #{user_id,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{nick_name,jdbcType=VARCHAR}, #{expand,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.originsys.im.domain.EimUser">
+    insert into eim_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="user_id != null">
+        user_id,
+      </if>
+      <if test="pwd != null">
+        pwd,
+      </if>
+      <if test="nick_name != null">
+        nick_name,
+      </if>
+      <if test="expand != null">
+        expand,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="user_id != null">
+        #{user_id,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="nick_name != null">
+        #{nick_name,jdbcType=VARCHAR},
+      </if>
+      <if test="expand != null">
+        #{expand,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.originsys.im.domain.EimUser">
+    update eim_user
+    <set>
+      <if test="user_id != null">
+        user_id = #{user_id,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        pwd = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="nick_name != null">
+        nick_name = #{nick_name,jdbcType=VARCHAR},
+      </if>
+      <if test="expand != null">
+        expand = #{expand,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.originsys.im.domain.EimUser">
+    update eim_user
+    set user_id = #{user_id,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      nick_name = #{nick_name,jdbcType=VARCHAR},
+      expand = #{expand,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

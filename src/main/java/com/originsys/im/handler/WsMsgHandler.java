@@ -1,15 +1,13 @@
 package com.originsys.im.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.originsys.im.config.Const;
 import com.originsys.im.config.ServerConfig;
+import com.originsys.im.config.WsMsgHandlerConfig;
 import com.originsys.im.domain.MessageVO;
 import com.originsys.im.domain.PreCheckVO;
 import com.originsys.im.util.BaseAction;
 import org.tio.core.ChannelContext;
 import org.tio.core.Tio;
-import org.tio.http.common.Cookie;
 import org.tio.http.common.HttpRequest;
 import org.tio.http.common.HttpResponse;
 import org.tio.utils.lock.SetWithLock;
@@ -17,12 +15,10 @@ import org.tio.websocket.common.WsRequest;
 import org.tio.websocket.common.WsResponse;
 import org.tio.websocket.common.WsSessionContext;
 import org.tio.websocket.server.handler.IWsMsgHandler;
-
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author mohuangNPC
@@ -30,6 +26,7 @@ import java.util.Objects;
  * @date 2021/11/25 15:44
  */
 public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
+    public WsMsgHandlerConfig ssMsgHandlerConfig = null;
 //    public static final ShowcaseWsMsgHandler me = new ShowcaseWsMsgHandler();
 //    public static final WsMsgHandler me = new WsMsgHandler();
     /**
@@ -42,13 +39,10 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
      */
     @Override
     public HttpResponse handshake(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
-//        List<Cookie> cookies = httpRequest.getCookies();
-//        log().info(cookies.size());
-//        for (Cookie cookie : cookies) {
-//            log().info(cookie.getName()+":"+cookie.getValue());
-//        }
         String clientip = httpRequest.getClientIp();
         String userId = httpRequest.getParam("userId");
+        String path = httpRequest.requestLine.path;
+        System.err.println(path);
         if(!connectionPreCheck(httpRequest,httpResponse).getState()){
             return httpResponse;
         }else{
@@ -69,10 +63,6 @@ public class WsMsgHandler extends BaseAction implements IWsMsgHandler {
     @Override
     public void onAfterHandshaked(HttpRequest httpRequest, HttpResponse httpResponse, ChannelContext channelContext) throws Exception {
         log().info("onAfterHandshaked:");
-//        List<Cookie> cookies = httpRequest.getCookies();
-//        for (Cookie cookie : cookies) {
-//            log().info(cookie.getName()+":"+cookie.getValue());
-//        }
         String userId = httpRequest.getParam("userId");
         log().info(Tio.getByUserid(channelContext.tioConfig,userId) == null);
         PreCheckVO preCheckVO = connectionPreCheck(httpRequest,httpResponse);
